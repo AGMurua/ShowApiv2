@@ -11,11 +11,16 @@ namespace ShowApi.Mapper
         {
             // Add as many of these lines as you need to map your objects
             CreateMap<TheaterEntity, TheaterDTO>();
-            CreateMap<RoomEntity, RoomDTO>();
-            CreateMap<SectionEntity, SectionDTO>();
-            CreateMap<ShowEntity, ShowDTO>();
             CreateMap<TheaterDTO, TheaterEntity>();
-            //CreateMap<IList<TheaterEntity>, IList<TheaterDTO>>();
+            CreateMap<RoomEntity, RoomDTO>();
+            CreateMap<ShowEntity, ShowDTO>();
+            CreateMap<CrudShowDTO, ShowEntity>();
+            CreateMap<SectionEntity, SectionDTO>();
+            CreateMap<SectionDTO, SectionEntity>();
+            CreateMap<PerformanceDTO, PerformanceEntity>();
+            CreateMap<PerformanceEntity, PerformanceDTO>();
+            CreateMap<PerformanceEntity, PerformanceCrudDTO>();
+            CreateMap<PerformanceCrudDTO, PerformanceEntity>();
         }
     }
 }

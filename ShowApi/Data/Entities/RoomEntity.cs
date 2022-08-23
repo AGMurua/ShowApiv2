@@ -6,22 +6,25 @@ namespace ShowApi.Data.Entities
 {
     public class RoomEntity
     {
-        public string Id { get; set; }
-        public string Name { get; set; }
-        public List<SectionEntity> Sections { get; set; }
+        [BsonId]
+        [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
 
-        public RoomEntity(string id, string name, List<SectionEntity> sections)
-        {
-            Id = new Guid().ToString();
-            Name = name;
-            Sections = sections;
-        }
+        public string Id { get; set; }
+        public string TheaterId { get; set; }
+        public string TheaterName { get; set; }
+        public string Name { get; set; }
+        public IList<SectionEntity> Sections { get; set; }
     }
 
     public class SectionEntity
     {
+        [BsonId]
+        [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
+
         public string Id { get; set; }
+        public string RoomId { get; set; }
+        public string RoomName { get; set; }
         public string Name { get; set; }
-        public List<string> Seat { get; set; }
+        public IList<string> Seat { get; set; }
     }
 }

@@ -19,22 +19,23 @@ namespace ShowApi.Managers
         {
             _context = context;
             _mapper = mapper;
+            _context.Table = "show";
         }
 
         internal IList<ShowDTO> GetAll()
         {
-            return _mapper.Map<IList<ShowDTO>>(_context.GetAll("show"));
+            return _mapper.Map<IList<ShowDTO>>(_context.GetAll());
         }
 
-        internal string SaveNewShow(ShowDTO show)
+        internal string SaveNewShow(CrudShowDTO show)
         {
-             _context.Save(_mapper.Map<ShowEntity>(show),"show");
+             _context.Save(_mapper.Map<ShowEntity>(show));
             return "";
         }
 
         internal ShowEntity GetById(string id)
         {
-            return _context.GetById(id, "show");
+            return _context.GetById(id);
         }
     }
 }

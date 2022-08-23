@@ -25,6 +25,7 @@ namespace ShowApi
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
+
         }
 
         public IConfiguration Configuration { get; }
@@ -40,12 +41,17 @@ namespace ShowApi
             });
             services.AddScoped<ShowManager>();
             services.AddScoped<TheaterManager>();
-            services.AddScoped<RoomManager>();
+            services.AddScoped<RoomManager>(); 
+            services.AddScoped<SectionManager>();
+            services.AddScoped<PerformanceManager>();
 
             services.AddScoped<BaseRepository<ShowEntity>>();
             services.AddScoped<BaseRepository<TheaterEntity>>();
             services.AddScoped<BaseRepository<RoomEntity>>();
             services.AddScoped<BaseRepository<SectionEntity>>();
+            services.AddScoped<PerformanceRepository>();
+
+            services.AddSingleton<MongoDBConnection>();
 
             var mapperConfig = new MapperConfiguration(mc =>
             {

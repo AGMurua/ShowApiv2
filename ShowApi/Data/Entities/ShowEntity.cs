@@ -9,9 +9,11 @@ namespace ShowApi.Data.Entities
         [BsonId]
         [BsonRepresentation(MongoDB.Bson.BsonType.ObjectId)]
         public string Id { get; set; }
-        [BsonElement("name")]
         public string Name { get; set; }
-        public List<PerformanceEntity> PerformanceEntities { get; set; }
-        
+        public string Description { get; set; }
+        public string Genre { get; set; }
+        public string MPARating { get; set; }
+        public IList<string> Cast { get; set; }
+
     }
 }

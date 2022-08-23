@@ -21,16 +21,17 @@ namespace ShowApi.Managers
             _context = context;
             _mapper = mapper;
             _roomManager = roomManager;
+            _context.Table = "theater";
         }
 
         public IList<TheaterDTO> GetAll()
         {
-            return _mapper.Map<IList<TheaterDTO>>(_context.GetAll("theater"));
+            return _mapper.Map<IList<TheaterDTO>>(_context.GetAll());
         }
 
         internal object GetById(string id)
         {
-            return _mapper.Map<TheaterDTO>(_context.GetById(id, "theater"));
+            return _mapper.Map<TheaterDTO>(_context.GetById(id));
         }
 
         public void Post()
@@ -54,7 +55,7 @@ namespace ShowApi.Managers
                 payload.Rooms = _roomManager.FindRooms(rooms);
             }
 
-            return _mapper.Map<TheaterDTO>(_context.Save(payload, "theater"));
+            return _mapper.Map<TheaterDTO>(_context.Save(payload));
             
         }
 

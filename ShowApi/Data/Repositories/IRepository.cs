@@ -5,10 +5,12 @@ namespace ShowApi.Data.Repositories
 {
     public interface IRepository<T>
     {
-        IList<T> GetAll(string table);
-        T GetById(string id, string table);
-        void DataFeed(T ent, string table);
+        IList<T> GetAll();
+        T GetById(string id);
+        void DataFeed(T ent);
         IList<T> GetByFilter(object filter);
-        T Save(T payload, string table);
+        T Save(T payload);
+        public string Table { get; set; }
+        long Delete(string id);
     }
 }

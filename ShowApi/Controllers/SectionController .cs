@@ -11,32 +11,32 @@ namespace ShowApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class RoomController : Controller
+    public class SectionController : Controller
     {
-        private readonly RoomManager _manager;
+        private readonly SectionManager _manager;
 
-        public RoomController(RoomManager manager)
+        public SectionController(SectionManager manager)
         {
             _manager = manager;
         }
 
 
         [HttpGet]
-        public ActionResult<IList<RoomDTO>> GetAll()
+        public ActionResult<IList<SectionDTO>> GetAll()
         {
             return Ok(_manager.GetAll());
         }
 
         [HttpGet("{id}")]
-        public ActionResult<RoomDTO> GetById(string id)
+        public ActionResult<SectionDTO> GetById(string id)
         {
             return Ok(_manager.GetById(id));
         }
 
         [HttpPut]
-        public IActionResult SaveRoom([BindRequired]string name, IList<string> rooms)
+        public IActionResult SaveSection([BindRequired]string name, [BindRequired]IList<string> seat)
         {
-            var result = _manager.SaveRoom(name, rooms);
+            var result = _manager.SaveSection(name, seat);
             return Created(Request.Path + "/" + result.Id, result);
         }
 

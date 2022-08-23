@@ -33,7 +33,7 @@ namespace ShowApi.Controllers
         }
 
         [HttpPost]
-        public ActionResult NewShow(ShowDTO show)
+        public ActionResult NewShow(CrudShowDTO show)
         {
             return Ok(_manager.SaveNewShow(show));
         }
