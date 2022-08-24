@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using ShowApi.Data.Entities;
 using ShowApi.Data.Repositories;
@@ -6,6 +7,7 @@ using ShowApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace ShowApi.Managers
 {
@@ -15,25 +17,41 @@ namespace ShowApi.Managers
         private readonly IMapper _mapper;
         private readonly SectionManager _sectionManager;
         private readonly IConfiguration _config;
+        private readonly IMemoryCache _memory;
 
-        public PerformanceManager(PerformanceRepository context, IMapper mapper, SectionManager sectionManager, IConfiguration config)
+        public PerformanceManager(PerformanceRepository context, IMapper mapper, SectionManager sectionManager, IConfiguration config, IMemoryCache memory)
         {
             _context = context;
             _mapper = mapper;
             _sectionManager = sectionManager;
             _context.Table = "performance";
             _config = config;
+            _memory = memory;
         }
 
         
-        public IList<PerformanceDTO> GetAll()
+        public object GetAll()
         {
-            return _mapper.Map<IList<PerformanceDTO>>(_context.GetAll());
+            var cache = _memory.Get("performance");
+            if (cache is null)
+            {
+                var result = _mapper.Map<IList<PerformanceDTO>>(_context.GetAll());
+                _memory.Set("performance", result);
+                return result;
+            }
+            return cache;
         }
 
         public PerformanceDTO GetById(string id)
         {
             return _mapper.Map<PerformanceDTO>(_context.GetById(id));
+        }
+
+        internal object GetByFilter(decimal? minPrice, decimal? maxPrice, 
+                                    DateTime? minDate, DateTime? maxDate, 
+                                    IList<string> cast, string genre)
+        {
+            return null;
         }
 
         public IList<PerformanceDTO> GetByShowId(string id)
@@ -61,16 +79,18 @@ namespace ShowApi.Managers
             }
 
             result.Data = _mapper.Map<PerformanceDTO>(_context.Save(payload));
+            RefreshCache();
             return result;
         }
         internal object Update(string id, PerformanceCrudDTO dto)
         {
+            RefreshCache();
             throw new NotImplementedException();
         }
         internal BaseResponse<PerformanceDTO> Delete(string id)
         {
             var test = _context.Delete(id);
-            var test2 = _config.GetValue<string>("Response");
+            RefreshCache();
             return new BaseResponse<PerformanceDTO>(_config.GetValue<string>("Response:Delete:Ok:Code"),
                                                     _config.GetValue<string>("Response:Delete:Ok:Message"));
         }
@@ -103,6 +123,12 @@ namespace ShowApi.Managers
             payload.LowestPrice = (decimal)price;
             payload.HighestPrice = (decimal)price;
             return payload;
+        }
+
+        private void RefreshCache()
+        {
+            var result = _mapper.Map<IList<PerformanceDTO>>(_context.GetAll());
+            _memory.Set("performance", result);
         }
 
 

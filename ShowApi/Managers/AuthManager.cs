@@ -34,6 +34,7 @@ namespace ShowApi.Managers
                 {
                     new Claim("user", userEntity.UserName),
                     new Claim("profile", userEntity.Role),
+                    new Claim("userId", userEntity.UserId)
                 });
 
 

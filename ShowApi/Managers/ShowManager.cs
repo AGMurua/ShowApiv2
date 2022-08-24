@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Caching.Memory;
 using Microsoft.Extensions.Configuration;
 using MongoDB.Bson;
 using MongoDB.Driver;
@@ -16,23 +17,33 @@ namespace ShowApi.Managers
         private readonly IConfiguration _config;
         private readonly IRepository<ShowEntity> _context;
         private readonly IMapper _mapper;
+        private readonly IMemoryCache _memory;
 
-        public ShowManager(BaseRepository<ShowEntity> context, IMapper mapper, IConfiguration config)
+        public ShowManager(BaseRepository<ShowEntity> context, IMapper mapper, IConfiguration config, IMemoryCache cache)
         {
             _config = config;
             _context = context;
             _mapper = mapper;
+            _memory = cache;
             _context.Table = "show";
         }
 
-        internal IList<ShowDTO> GetAll()
+        internal object GetAll()
         {
-            return _mapper.Map<IList<ShowDTO>>(_context.GetAll());
+            var cache = _memory.Get("show");
+            if (cache is null)
+            {
+                var result = _mapper.Map<IList<PerformanceDTO>>(_context.GetAll());
+                _memory.Set("performance", result);
+                return result;
+            }
+            return cache;
         }
 
         internal string SaveNewShow(CrudShowDTO show)
         {
              _context.Save(_mapper.Map<ShowEntity>(show));
+            RefreshCache();
             return "";
         }
 
@@ -53,14 +64,22 @@ namespace ShowApi.Managers
                 Id = id,
             };
             var result = _context.Update(payload, id);
+            RefreshCache();
             return null;
         }
 
         internal object Delete(string id)
         {
             var test = _context.Delete(id);
+            RefreshCache();
             return new BaseResponse<PerformanceDTO>(_config.GetValue<string>("Response:Delete:Ok:Code"),
                                                     _config.GetValue<string>("Response:Delete:Ok:Message"));
+        }
+
+        private void RefreshCache()
+        {
+            var result = _mapper.Map<IList<PerformanceDTO>>(_context.GetAll());
+            _memory.Set("show", result);
         }
     }
 }

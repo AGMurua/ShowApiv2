@@ -29,17 +29,13 @@ namespace ShowApi.Controllers
             return Ok(_manager.GetById(id));
         }
 
-        //[HttpPut]
-        //public IActionResult Create()
-        //{
-        //    var result = _manager.SaveRoom();
-        //    return Created(Request.Path + "/" + result.Id, result);
-        //}
-        [HttpPatch("{id}")]
-        public ActionResult Edit(string id)
+        [HttpPut]
+        public IActionResult Create(TicketDto ticket)
         {
-            return Ok(_manager.Update(id));
+            var result = _manager.SaveTicket(ticket);
+            return Created(Request.Path + "/" + result.Id, result);
         }
+
         [HttpDelete("{id}")]
         public ActionResult Delete(string id)
         {

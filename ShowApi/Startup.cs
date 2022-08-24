@@ -41,6 +41,7 @@ namespace ShowApi
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddCors();
+            services.AddMemoryCache();
             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -98,7 +99,6 @@ namespace ShowApi
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
             });
 
-
             services.AddScoped<ShowManager>();
             services.AddScoped<TheaterManager>();
             services.AddScoped<RoomManager>();
@@ -113,6 +113,7 @@ namespace ShowApi
             services.AddScoped<BaseRepository<SectionEntity>>();
             services.AddScoped<PerformanceRepository>();
             services.AddScoped<UserRepository>();
+            services.AddScoped<TicketRepository>();
 
             services.AddSingleton<MongoDBConnection>();
 
