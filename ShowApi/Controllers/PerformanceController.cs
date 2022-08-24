@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using ShowApi.Managers;
 using ShowApi.Models;
 using System;
@@ -6,6 +7,7 @@ using System;
 namespace ShowApi.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("[controller]")]
     public class PerformanceController : ControllerBase
     {
@@ -22,6 +24,7 @@ namespace ShowApi.Controllers
             return Ok(_manager.GetById(id));
         }
         [HttpGet]
+ 
         public ActionResult GetAll()
         {
             return Ok(_manager.GetAll());

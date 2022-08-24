@@ -23,6 +23,7 @@ namespace ShowApi.Managers
             _config = config;
         }
 
+        
         public IList<PerformanceDTO> GetAll()
         {
             return _mapper.Map<IList<PerformanceDTO>>(_context.GetAll());

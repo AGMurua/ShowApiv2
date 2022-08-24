@@ -23,6 +23,8 @@ namespace ShowApi.Mapper
             CreateMap<PerformanceCrudDTO, PerformanceEntity>();
             CreateMap<PerformanceSectionPriceDTO, SectionByPrice>();
             CreateMap<SectionByPrice, PerformanceSectionPriceDTO>();
+            CreateMap<TheaterCrudDTO, TheaterEntity>();
+            CreateMap<TheaterEntity, TheaterCrudDTO>();
 
         }
     }
