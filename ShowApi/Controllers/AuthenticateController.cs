@@ -24,16 +24,19 @@ namespace ShowApi.Controllers
             _config = config;
             _manager = manager;
         }
-        [HttpPost]
+        [HttpPost("LogIn")]
         [AllowAnonymous]
         public ActionResult Auth([BindRequired]string user, [BindRequired]string password)
         {
-            return Ok(_manager.LogIn(user, password));
+            var result = _manager.LogIn(user, password);
+            if (result.Code == "401")
+                return Unauthorized(result);
+            return Ok(result.Data);
         }
 
-        [HttpPut]
+        [HttpPut("SignUp")]
         [AllowAnonymous]
-        public ActionResult SignUp(string password, string userName)
+        public ActionResult SignUp([BindRequired] string userName, [BindRequired] string password)
         {
             return Ok(_manager.Register(userName, password));
         }

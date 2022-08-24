@@ -31,7 +31,7 @@ namespace ShowApi.Managers
             return result;
         }
 
-        internal object GetById(string id)
+        internal SectionDTO GetById(string id)
         {
             return _mapper.Map<SectionDTO>(_context.GetById(id));
         }

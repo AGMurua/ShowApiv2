@@ -7,7 +7,6 @@ namespace ShowApi.Models
     {
         public string Id { get; set; }
         public string TheaterId { get; set; }
-        public string TheaterName { get; set; }
         public string Name { get; set; }
         public IList<string> Sections { get; set; }
 
@@ -18,7 +17,6 @@ namespace ShowApi.Models
     {
         public string Id { get; set; }
         public string RoomId { get; set; }
-        public string RoomName { get; set; }
         public string Name { get; set; }
         public IList<string> Seat { get; set; }
 

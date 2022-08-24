@@ -2,6 +2,7 @@
 using Microsoft.IdentityModel.Tokens;
 using ShowApi.Data.Entities;
 using ShowApi.Data.Repositories;
+using ShowApi.Models;
 using System;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -21,37 +22,43 @@ namespace ShowApi.Managers
             _context = context;
             _context.Table = "users";
         }
-        public object LogIn(string user, string password)
+        public BaseResponse<object> LogIn(string user, string password)
         {
-            var userEntity = _context.FindByUserName(user);
+            var userEntity = _context.FindByUserName(user.ToLower());
             if (userEntity == null)
-                return null;
+                return new BaseResponse<object>(_config.GetValue<string>("Response:Auth:BadUser:Code"),
+                    _config.GetValue<string>("Response:Auth:BadUser:Message"));
             else if (userEntity.Password != GetHashString(password))
-                return null;
+                return new BaseResponse<object>(_config.GetValue<string>("Response:Auth:BadPass:Code"),
+                    _config.GetValue<string>("Response:Auth:BadPass:Message")); var claims = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim("user", userEntity.UserName),
+                    new Claim("profile", userEntity.Role),
+                });
+
 
             var tokenHandler = new JwtSecurityTokenHandler();
             var tokenKey = Encoding.ASCII.GetBytes(_config.GetSection("JwtKey").ToString());
             var tokenDescriptor = new SecurityTokenDescriptor()
             {
-                Subject = new ClaimsIdentity(new Claim[]
-                {
-                    new Claim(ClaimTypes.Email, user),
-                    new Claim(ClaimTypes.Role, "admin")
-                }),
+                Subject = claims,
                 Expires = DateTime.UtcNow.AddHours(1),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(tokenKey),
                 SecurityAlgorithms.HmacSha256Signature)
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
-            return token;
+            var result = new BaseResponse<object>();
+            result.Data =tokenHandler.WriteToken(token);
+            return result;
         }
 
         public object Register(string user, string password)
         {
             var payload = new UserEntity
             {
-                UserName = user,
-                Password = GetHashString(password)
+                UserName = user.ToLower(),
+                Password = GetHashString(password),
+                Role = "user"
             };
             return _context.Save(payload);
         }

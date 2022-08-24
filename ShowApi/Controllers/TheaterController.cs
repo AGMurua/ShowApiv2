@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using MongoDB.Driver;
@@ -11,8 +12,9 @@ using System.Collections.Generic;
 namespace ShowApi.Controllers
 {
     [ApiController]
+    //[Authorize]
     [Route("[controller]")]
-    public class TheaterController : Controller
+    public class TheaterController : BaseController
     {
         private readonly TheaterManager _manager;
 
@@ -36,17 +38,23 @@ namespace ShowApi.Controllers
         [HttpPut]
         public ActionResult Create(TheaterCrudDTO dto)
         {
+            if (!checkProfile())
+                return Unauthorized();
             var result = _manager.SaveTheater(dto);
             return Created(Request.Path + "/" + result.Id, result);
         }
         [HttpPatch("{id}")]
         public ActionResult Edit(string id, TheaterCrudDTO dto)
         {
+            if (!checkProfile())
+                return Unauthorized();
             return Ok(_manager.Update(id, dto));
         }
         [HttpDelete("{id}")]
         public ActionResult Delete(string id)
         {
+            if (!checkProfile())
+                return Unauthorized();
             return Ok(_manager.Delete(id));
         }
 

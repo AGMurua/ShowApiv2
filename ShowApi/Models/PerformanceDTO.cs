@@ -20,6 +20,8 @@ namespace ShowApi.Models
     public class PerformanceSectionPriceDTO
     {
         public string SectionId { get; set; }
+        public IList<string> Seats { get; set; }
+        public IList<string> SoldSeats { get; set; }
         public decimal? Price { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 using MongoDB.Driver;
@@ -10,8 +11,9 @@ using System.Collections.Generic;
 namespace ShowApi.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("[controller]")]
-    public class RoomController : Controller
+    public class RoomController : BaseController
     {
         private readonly RoomManager _manager;
 
@@ -36,17 +38,23 @@ namespace ShowApi.Controllers
         [HttpPut]
         public IActionResult Create([BindRequired]string name, IList<string> rooms)
         {
+            if (!checkProfile())
+                return Unauthorized();
             var result = _manager.SaveRoom(name, rooms);
             return Created(Request.Path + "/" + result.Id, result);
         }
         [HttpPatch("{id}")]
         public ActionResult Edit(string id, string name, IList<string> sections)
         {
+            if (!checkProfile())
+                return Unauthorized();
             return Ok(_manager.Update(id, name, sections));
         }
         [HttpDelete("{id}")]
         public ActionResult Delete(string id)
         {
+            if (!checkProfile())
+                return Unauthorized();
             return Ok(_manager.Delete(id));
         }
 
