@@ -21,6 +21,9 @@ namespace ShowApi.Mapper
             CreateMap<PerformanceEntity, PerformanceDTO>();
             CreateMap<PerformanceEntity, PerformanceCrudDTO>();
             CreateMap<PerformanceCrudDTO, PerformanceEntity>();
+            CreateMap<PerformanceSectionPriceDTO, SectionByPrice>();
+            CreateMap<SectionByPrice, PerformanceSectionPriceDTO>();
+
         }
     }
 }

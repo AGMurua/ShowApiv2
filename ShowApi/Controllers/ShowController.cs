@@ -27,15 +27,25 @@ namespace ShowApi.Controllers
         }
 
         [HttpGet("{id}")]
-        public ActionResult GetDetailById(string id)
+        public ActionResult GetById(string id)
         {
             return Ok(_manager.GetById(id));
         }
 
-        [HttpPost]
-        public ActionResult NewShow(CrudShowDTO show)
+        [HttpPut]
+        public ActionResult Create(CrudShowDTO show)
         {
             return Ok(_manager.SaveNewShow(show));
+        }
+        [HttpPatch("{id}")]
+        public ActionResult Edit(string id, CrudShowDTO dto)
+        {
+            return Ok(_manager.Update(dto,id));
+        }
+        [HttpDelete("{id}")]
+        public ActionResult Delete(string id)
+        {
+            return Ok(_manager.Delete(id));
         }
     }
 }

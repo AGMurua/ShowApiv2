@@ -34,10 +34,20 @@ namespace ShowApi.Controllers
         }
 
         [HttpPut]
-        public IActionResult SaveSection([BindRequired]string name, [BindRequired]IList<string> seat)
+        public ActionResult Create([BindRequired]string name, [BindRequired]int numberOfSeat)
         {
-            var result = _manager.SaveSection(name, seat);
+            var result = _manager.SaveSection(name, numberOfSeat);
             return Created(Request.Path + "/" + result.Id, result);
+        }
+        [HttpPatch("{id}")]
+        public ActionResult Edit(string id, string name, int numberOfSeat)
+        {
+            return Ok(_manager.UpdateSection(name, numberOfSeat,id));
+        }
+        [HttpDelete("{id}")]
+        public ActionResult Delete(string id)
+        {
+            return Ok(_manager.Delete(id));
         }
 
     }

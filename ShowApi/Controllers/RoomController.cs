@@ -34,10 +34,20 @@ namespace ShowApi.Controllers
         }
 
         [HttpPut]
-        public IActionResult SaveRoom([BindRequired]string name, IList<string> rooms)
+        public IActionResult Create([BindRequired]string name, IList<string> rooms)
         {
             var result = _manager.SaveRoom(name, rooms);
             return Created(Request.Path + "/" + result.Id, result);
+        }
+        [HttpPatch("{id}")]
+        public ActionResult Edit(string id, string name, IList<string> sections)
+        {
+            return Ok(_manager.Update(id, name, sections));
+        }
+        [HttpDelete("{id}")]
+        public ActionResult Delete(string id)
+        {
+            return Ok(_manager.Delete(id));
         }
 
     }

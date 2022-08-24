@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using ShowApi.Managers;
 using ShowApi.Models;
+using System;
 
 namespace ShowApi.Controllers
 {
@@ -14,6 +15,7 @@ namespace ShowApi.Controllers
         {
             _manager = manager;
         }
+
         [HttpGet("{id}")]
         public ActionResult GetById(string id)
         {
@@ -26,12 +28,15 @@ namespace ShowApi.Controllers
         }
 
         [HttpPut]
-        public ActionResult SaveNewPerformance(PerformanceCrudDTO dto)
+        public ActionResult Create(PerformanceCrudDTO dto, bool samePriceForAllSections = false, decimal? price = null)
         {
-            return Ok(_manager.SaveNewPerformance(dto));
+            var result = _manager.SaveNewPerformance(dto, samePriceForAllSections, price);
+            if (result.Code == "409")
+                return Conflict(result);
+            return Created(Request.Path + "/" + result.Data.Id, result.Data);
         }
-        [HttpPatch]
-        public ActionResult EditPerformance()
+        [HttpPatch("{id}")]
+        public ActionResult Edit(string id)
         {
             return Ok();
         }

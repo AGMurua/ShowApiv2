@@ -13,7 +13,7 @@ namespace ShowApi.Data.Entities
         public string TheaterId { get; set; }
         public string TheaterName { get; set; }
         public string Name { get; set; }
-        public IList<SectionEntity> Sections { get; set; }
+        public IList<string> Sections { get; set; }
     }
 
     public class SectionEntity

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace ShowApi.Models
 {
@@ -13,6 +14,12 @@ namespace ShowApi.Models
         public string ShowId { get; set; }
         public string TeatherId { get; set; }
         public string RoomId { get; set; }
+        public IList<PerformanceSectionPriceDTO> Sections { get; set; }
         public DateTime Date { get; set; }
+    }
+    public class PerformanceSectionPriceDTO
+    {
+        public string SectionId { get; set; }
+        public decimal? Price { get; set; }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.Extensions.Configuration;
 using ShowApi.Data.Entities;
 using ShowApi.Data.Repositories;
 using ShowApi.Models;
@@ -11,12 +12,14 @@ namespace ShowApi.Managers
     {
         private readonly IRepository<SectionEntity> _context;
         private readonly IMapper _mapper;
+        private readonly IConfiguration _config;
 
-        public SectionManager(BaseRepository<SectionEntity> context, IMapper mapper)
+        public SectionManager(BaseRepository<SectionEntity> context, IMapper mapper, IConfiguration config)
         {
             _context = context;
             _mapper = mapper;
             _context.Table = "section";
+            _config = config;
         }
         public IList<SectionEntity> FindSections(IList<string> sections)
         {
@@ -38,27 +41,47 @@ namespace ShowApi.Managers
             return _mapper.Map<IList<SectionDTO>>(_context.GetAll());
         }
 
-        internal SectionDTO SaveSection(string name, IList<string> seat)
+        internal SectionDTO SaveSection(string name, int seats)
         {
+
             var payload = new SectionEntity
             {
                 Name = name,
-                Seat = seat
+                Seat = generateSeats(seats)
             };
             return _mapper.Map<SectionDTO>(_context.Save(payload));
         }
 
-        internal SectionDTO UpdateSection(SectionDTO dto)
+       
+        internal SectionDTO UpdateSection(string name, int numberOfSeat,string id)
         {
-            var entity = _context.GetById(dto.Id);
+            var entity = _context.GetById(id);
             var payload = new SectionEntity
             {
-                Name = dto.Name ?? entity.Name,
-                Seat = dto.Seat ?? entity.Seat,
-                Id = entity.Id,
+                Name = name ?? entity.Name,
+                Seat = numberOfSeat != 0 ? generateSeats(numberOfSeat) : entity.Seat,
+                Id=entity.Id
+                
             };
+            _context.Update(payload, id);
+            return null;
+        }
 
-            return _mapper.Map<SectionDTO>(_context.Save(payload));
+        internal object Delete(string id)
+        {
+            var test = _context.Delete(id);
+            return new BaseResponse<PerformanceDTO>(_config.GetValue<string>("Response:Delete:Ok:Code"),
+                                                    _config.GetValue<string>("Response:Delete:Ok:Message"));
+        }
+
+        private IList<string> generateSeats(int seats)
+        {
+            var seatsList = new List<string>();
+            for (int i = 0; i < seats; i++)
+            {
+                seatsList.Add((i + 1).ToString());
+            }
+            return seatsList;
         }
     }
 }

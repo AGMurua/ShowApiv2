@@ -64,6 +64,14 @@ namespace ShowApi.Data.Repositories
             var test = feed.DeleteOne(filter);
             return test.DeletedCount;
         }
+
+        public ReplaceOneResult Update(T entity, string id)
+        {
+            var feed = dataBase.GetCollection<T>(Table);
+            FilterDefinition<T> filter = Builders<T>.Filter.Eq("_id", ObjectId.Parse(id));
+            var replaceResult = feed.ReplaceOne(filter, entity);
+            return replaceResult;
+        }
     }
 
     public class MongoDBConnection

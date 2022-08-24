@@ -1,4 +1,5 @@
-﻿using ShowApi.Data.Entities;
+﻿using MongoDB.Driver;
+using ShowApi.Data.Entities;
 using System.Collections.Generic;
 
 namespace ShowApi.Data.Repositories
@@ -12,5 +13,6 @@ namespace ShowApi.Data.Repositories
         T Save(T payload);
         public string Table { get; set; }
         long Delete(string id);
+        ReplaceOneResult Update(T entity, string id);
     }
 }

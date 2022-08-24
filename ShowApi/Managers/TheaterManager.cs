@@ -34,15 +34,6 @@ namespace ShowApi.Managers
             return _mapper.Map<TheaterDTO>(_context.GetById(id));
         }
 
-        public void Post()
-        {
-
-        }
-
-        internal void DataFeed(TheaterDTO dto)
-        {
-
-        }
 
         internal TheaterDTO SaveTheater(string name, IList<string> rooms)
         {
@@ -59,15 +50,6 @@ namespace ShowApi.Managers
             
         }
 
-        internal object SaveSection(string name, IList<string> seats, string roomId)
-        {
-            throw new NotImplementedException();
-        }
-
-        internal object SaveRoom(string name, IList<string> sections, string theaterId)
-        {
-            throw new NotImplementedException();
-        }
     }
 
 }
