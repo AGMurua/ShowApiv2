@@ -30,11 +30,11 @@ namespace ShowApi.Controllers
             return Ok(_manager.GetById(id));
         }
 
-        [HttpGet("/filter")]
+        [HttpGet("/Filter")]
         [AllowAnonymous]
-        public ActionResult GetByFilter(decimal? minPrice, decimal? maxPrice,
-                                        DateTime? minDate, DateTime? maxDate,
-                                        IList<string> cast, string genre)
+        public ActionResult GetByFilter([FromQuery]decimal? minPrice, [FromQuery] decimal? maxPrice,
+                                        [FromQuery] DateTime? minDate, [FromQuery] DateTime? maxDate,
+                                        [FromQuery] IList<string> cast, [FromQuery] string genre)
         {
             return Ok(_manager.GetByFilter(minPrice, maxPrice, minDate, maxDate, cast, genre));
         }

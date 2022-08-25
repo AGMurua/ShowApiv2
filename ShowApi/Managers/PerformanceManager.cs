@@ -22,7 +22,7 @@ namespace ShowApi.Managers
         private readonly TheaterManager _theaterManager;
         private readonly RoomManager _roomManager;
 
-        public PerformanceManager(PerformanceRepository context, IMapper mapper, SectionManager sectionManager, 
+        public PerformanceManager(PerformanceRepository context, IMapper mapper, SectionManager sectionManager,
                                 IConfiguration config, IMemoryCache memory, TheaterManager theaterManager, RoomManager roomManager,
                                 ShowManager showManager)
         {
@@ -37,10 +37,10 @@ namespace ShowApi.Managers
             _roomManager = roomManager;
         }
 
-        
-        public object GetAll()
+
+        public IList<PerformanceDTO> GetAll()
         {
-            var cache = _memory.Get("performance");
+            var cache = _memory.Get<IList<PerformanceDTO>>("performance");
             if (cache is null)
             {
                 var result = _mapper.Map<IList<PerformanceDTO>>(_context.GetAll());
@@ -55,11 +55,31 @@ namespace ShowApi.Managers
             return _mapper.Map<PerformanceDTO>(_context.GetById(id));
         }
 
-        internal object GetByFilter(decimal? minPrice, decimal? maxPrice, 
-                                    DateTime? minDate, DateTime? maxDate, 
-                                    IList<string> cast, string genre)
+        internal IList<PerformanceDTO> GetByFilter(decimal? minPrice, decimal? maxPrice,
+                                    DateTime? minDate, DateTime? maxDate, IList<string> cast, string genre)
         {
-            return null;
+            var performances = _memory.Get<IList<PerformanceDTO>>("performance");
+            if (performances is null)
+                performances = this.GetAll();
+            if (minPrice is not null)
+                performances = performances.Where(x => x.HighestPrice >= minPrice).ToList();
+            if (maxPrice is not null)
+                performances = performances.Where(x => x.LowestPrice <= maxPrice).ToList();
+            if(minDate is not null)
+                performances = performances.Where(x => x.Date >= minDate).ToList();
+            if (maxDate is not null)
+                performances = performances.Where(x => x.Date <= maxDate).ToList();
+            if (cast is not null && cast.Count > 0)
+            {
+                foreach (var item in cast)
+                {
+                    performances = performances.Where(x => _showManager.GetById(x.ShowId).Cast.Contains(item)).ToList();
+                }
+            }
+            if (genre is not null)
+                performances = performances.Where(x => _showManager.GetById(x.ShowId).Genre == genre).ToList();
+
+            return performances;
         }
 
         public IList<PerformanceDTO> GetByShowId(string id)
