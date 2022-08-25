@@ -23,12 +23,16 @@ namespace ShowApi.Controllers
 
 
         [HttpGet]
+        [AllowAnonymous]
+
         public ActionResult<IList<ShowDTO>> GetAll()
         {
             return Ok(_manager.GetAll());        
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
+
         public ActionResult GetById(string id)
         {
             return Ok(_manager.GetById(id));
@@ -39,7 +43,8 @@ namespace ShowApi.Controllers
         {
             if (!checkProfile())
                 return Unauthorized();
-            return Ok(_manager.SaveNewShow(show));
+            var result = _manager.SaveNewShow(show);
+            return Created(Request.Path + "/" + result.Id, result);
         }
         [HttpPatch("{id}")]
         public ActionResult Edit(string id, CrudShowDTO dto)

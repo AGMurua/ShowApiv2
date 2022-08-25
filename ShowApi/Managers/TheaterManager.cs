@@ -32,7 +32,7 @@ namespace ShowApi.Managers
             return _mapper.Map<IList<TheaterDTO>>(_context.GetAll());
         }
 
-        internal object GetById(string id)
+        internal TheaterDTO GetById(string id)
         {
             return _mapper.Map<TheaterDTO>(_context.GetById(id));
         }

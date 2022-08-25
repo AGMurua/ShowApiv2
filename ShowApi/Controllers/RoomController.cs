@@ -26,21 +26,25 @@ namespace ShowApi.Controllers
         [HttpGet]
         public ActionResult<IList<RoomDTO>> GetAll()
         {
+            if (!checkProfile())
+                return Unauthorized();
             return Ok(_manager.GetAll());
         }
 
         [HttpGet("{id}")]
         public ActionResult<RoomDTO> GetById(string id)
         {
+            if (!checkProfile())
+                return Unauthorized();
             return Ok(_manager.GetById(id));
         }
 
         [HttpPut]
-        public IActionResult Create([BindRequired]string name, IList<string> rooms)
+        public IActionResult Create([BindRequired]string name, string theatherID,IList<string> rooms)
         {
             if (!checkProfile())
                 return Unauthorized();
-            var result = _manager.SaveRoom(name, rooms);
+            var result = _manager.SaveRoom(name, theatherID, rooms);
             return Created(Request.Path + "/" + result.Id, result);
         }
         [HttpPatch("{id}")]

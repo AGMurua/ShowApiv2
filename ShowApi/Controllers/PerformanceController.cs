@@ -24,6 +24,7 @@ namespace ShowApi.Controllers
         }
 
         [HttpGet("{id}")]
+        [AllowAnonymous]
         public ActionResult GetById(string id)
         {
             return Ok(_manager.GetById(id));
@@ -55,15 +56,6 @@ namespace ShowApi.Controllers
             return Created(Request.Path + "/" + result.Data.Id, result.Data);
         }
 
-
-
-        [HttpPatch("{id}")]
-        public ActionResult Edit(string id, PerformanceCrudDTO dto)
-        {
-            if (!checkProfile())
-                return Unauthorized();
-            return Ok(_manager.Update(id, dto));
-        }
         [HttpDelete("{id}")]
         public ActionResult DeletePerformance(string id)
         {

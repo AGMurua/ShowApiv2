@@ -33,23 +33,23 @@ namespace ShowApi.Managers
             var cache = _memory.Get("show");
             if (cache is null)
             {
-                var result = _mapper.Map<IList<PerformanceDTO>>(_context.GetAll());
-                _memory.Set("performance", result);
+                var result = _mapper.Map<IList<ShowDTO>>(_context.GetAll());
+                _memory.Set("show", result);
                 return result;
             }
             return cache;
         }
 
-        internal string SaveNewShow(CrudShowDTO show)
+        internal ShowDTO SaveNewShow(CrudShowDTO show)
         {
-             _context.Save(_mapper.Map<ShowEntity>(show));
+            var result = _mapper.Map<ShowDTO>(_context.Save(_mapper.Map<ShowEntity>(show)));
             RefreshCache();
-            return "";
+            return result;
         }
 
-        internal ShowEntity GetById(string id)
+        internal ShowDTO GetById(string id)
         {
-            return _context.GetById(id);
+            return _mapper.Map<ShowDTO>(_context.GetById(id));
         }
         internal ShowDTO Update(CrudShowDTO dto, string id)
         {
@@ -78,7 +78,7 @@ namespace ShowApi.Managers
 
         private void RefreshCache()
         {
-            var result = _mapper.Map<IList<PerformanceDTO>>(_context.GetAll());
+            var result = _mapper.Map<IList<ShowDTO>>(_context.GetAll());
             _memory.Set("show", result);
         }
     }

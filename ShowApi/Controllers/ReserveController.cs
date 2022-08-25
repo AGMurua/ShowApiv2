@@ -7,7 +7,7 @@ namespace ShowApi.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class ReserveController : ControllerBase
+    public class ReserveController : BaseController
     {
         private readonly ReserveManager _manager;
 
@@ -20,26 +20,16 @@ namespace ShowApi.Controllers
         [HttpGet]
         public ActionResult<IList<ReserveDto>> GetAll()
         {
-            return Ok(_manager.GetAll());
-        }
-
-        [HttpGet("{id}")]
-        public ActionResult<RoomDTO> GetById(string id)
-        {
-            return Ok(_manager.GetById(id));
+            return Ok(_manager.GetAll(userId(),profile()));
         }
 
         [HttpPut]
-        public IActionResult Create(TicketDto ticket)
+        public ActionResult Create(ReserveCrudDto ticket)
         {
-            var result = _manager.SaveTicket(ticket);
-            return Created(Request.Path + "/" + result.Id, result);
-        }
-
-        [HttpDelete("{id}")]
-        public ActionResult Delete(string id)
-        {
-            return Ok(_manager.Delete(id));
+            var result = _manager.SaveTicket(ticket, userId(), userName());
+            if (result.Code == "409")
+                return Conflict(result);
+            return Created(Request.Path + "/" + result.Data.Id, result);
         }
 
     }

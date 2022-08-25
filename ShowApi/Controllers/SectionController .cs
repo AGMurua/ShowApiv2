@@ -26,21 +26,25 @@ namespace ShowApi.Controllers
         [HttpGet]
         public ActionResult<IList<SectionDTO>> GetAll()
         {
+            if (!checkProfile())
+                return Unauthorized();
             return Ok(_manager.GetAll());
         }
 
         [HttpGet("{id}")]
         public ActionResult<SectionDTO> GetById(string id)
         {
+            if (!checkProfile())
+                return Unauthorized();
             return Ok(_manager.GetById(id));
         }
 
         [HttpPut]
-        public ActionResult Create([BindRequired]string name, [BindRequired]int numberOfSeat)
+        public ActionResult Create([BindRequired]string name, [BindRequired]int numberOfSeat, string roomdId)
         {
             if (!checkProfile())
                 return Unauthorized();
-            var result = _manager.SaveSection(name, numberOfSeat);
+            var result = _manager.SaveSection(name, numberOfSeat, roomdId);
             return Created(Request.Path + "/" + result.Id, result);
         }
         [HttpPatch("{id}")]

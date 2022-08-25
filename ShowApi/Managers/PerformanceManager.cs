@@ -18,8 +18,13 @@ namespace ShowApi.Managers
         private readonly SectionManager _sectionManager;
         private readonly IConfiguration _config;
         private readonly IMemoryCache _memory;
+        private readonly ShowManager _showManager;
+        private readonly TheaterManager _theaterManager;
+        private readonly RoomManager _roomManager;
 
-        public PerformanceManager(PerformanceRepository context, IMapper mapper, SectionManager sectionManager, IConfiguration config, IMemoryCache memory)
+        public PerformanceManager(PerformanceRepository context, IMapper mapper, SectionManager sectionManager, 
+                                IConfiguration config, IMemoryCache memory, TheaterManager theaterManager, RoomManager roomManager,
+                                ShowManager showManager)
         {
             _context = context;
             _mapper = mapper;
@@ -27,6 +32,9 @@ namespace ShowApi.Managers
             _context.Table = "performance";
             _config = config;
             _memory = memory;
+            _showManager = showManager;
+            _theaterManager = theaterManager;
+            _roomManager = roomManager;
         }
 
         
@@ -61,14 +69,25 @@ namespace ShowApi.Managers
 
         public BaseResponse<PerformanceDTO> SaveNewPerformance(PerformanceCrudDTO dto, bool samePrice, decimal? price = null)
         {
-            var payload = _mapper.Map<PerformanceEntity>(dto);
+            var theaterData = findTheather(dto.TeatherId);
+            var roomData = findRoom(dto.RoomId);
+            var showData = findShow(dto.ShowId);
+            var payload = new PerformanceEntity
+            {
+                Date = dto.Date,
+                TeatherName = theaterData.Name,
+                Adress = theaterData.Address,
+                ShowId = dto.ShowId,
+                RoomName = roomData.Name,
+                ShowName = showData.Name,
+            };
             var result = new BaseResponse<PerformanceDTO>();
             if (samePrice && price == null)
             {
                 return new BaseResponse<PerformanceDTO>(_config.GetValue<string>("Response:Save:Bad:Code"),
                                                         _config.GetValue<string>("Response:Save:Bad:Message"));
             }
-            payload.Sections = findSections(payload.Sections);
+            payload.Sections = findSections(dto.Sections);
             if (samePrice && price != null)
             {
                 payload = setSamePrice(price, payload, dto);
@@ -77,11 +96,16 @@ namespace ShowApi.Managers
             {
                 payload = setAvergaPrices(dto, payload);
             }
-
             result.Data = _mapper.Map<PerformanceDTO>(_context.Save(payload));
             RefreshCache();
             return result;
         }
+
+        private ShowDTO findShow(string showId)
+        {
+            return _showManager.GetById(showId);
+        }
+
         internal object Update(string id, PerformanceCrudDTO dto)
         {
             RefreshCache();
@@ -95,15 +119,21 @@ namespace ShowApi.Managers
                                                     _config.GetValue<string>("Response:Delete:Ok:Message"));
         }
 
-        private IList<SectionByPrice> findSections(IList<SectionByPrice> sections)
+        private IList<SectionByPrice> findSections(IList<PerformanceSectionPriceDTO> sections)
         {
+            var sectionParse = new List<SectionByPrice>();
             foreach (var item in sections)
             {
+                var result = new SectionByPrice();
                 var sectionData = _sectionManager.GetById(item.SectionId);
-                item.Seats = sectionData.Seat;
-                item.SoldSeats = null;
+                result.Seats = sectionData.Seat;
+                result.Price = (decimal)item.Price;
+                result.SectionId = item.SectionId;
+                result.SectionName = sectionData.Name;
+                result.SoldSeats = new List<string>();
+                sectionParse.Add(result);
             }
-            return sections;
+            return sectionParse;
         }
 
 
@@ -124,7 +154,15 @@ namespace ShowApi.Managers
             payload.HighestPrice = (decimal)price;
             return payload;
         }
+        private RoomDTO findRoom(string roomId)
+        {
+            return _roomManager.GetById(roomId);
+        }
 
+        private TheaterDTO findTheather(string teatherId)
+        {
+            return _theaterManager.GetById(teatherId);
+        }
         private void RefreshCache()
         {
             var result = _mapper.Map<IList<PerformanceDTO>>(_context.GetAll());

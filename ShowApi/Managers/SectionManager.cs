@@ -41,13 +41,14 @@ namespace ShowApi.Managers
             return _mapper.Map<IList<SectionDTO>>(_context.GetAll());
         }
 
-        internal SectionDTO SaveSection(string name, int seats)
+        internal SectionDTO SaveSection(string name, int seats, string roomdId)
         {
 
             var payload = new SectionEntity
             {
                 Name = name,
-                Seat = generateSeats(seats)
+                Seat = generateSeats(seats),
+                RoomId = roomdId
             };
             return _mapper.Map<SectionDTO>(_context.Save(payload));
         }

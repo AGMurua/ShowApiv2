@@ -26,12 +26,16 @@ namespace ShowApi.Controllers
         [HttpGet]
         public ActionResult<IList<TheaterDTO>> GetAll()
         {
+            if (!checkProfile())
+                return Unauthorized();
             return Ok(_manager.GetAll());
         }
 
         [HttpGet("{id}")]
         public ActionResult<TheaterDTO> GetById(string id)
         {
+            if (!checkProfile())
+                return Unauthorized();
             return Ok(_manager.GetById(id));
         }
 

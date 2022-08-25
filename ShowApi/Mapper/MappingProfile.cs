@@ -19,9 +19,11 @@ namespace ShowApi.Mapper
             CreateMap<SectionDTO, SectionEntity>();
             CreateMap<PerformanceDTO, PerformanceEntity>();
             CreateMap<PerformanceEntity, PerformanceDTO>();
-            CreateMap<PerformanceEntity, PerformanceCrudDTO>();
-            CreateMap<PerformanceCrudDTO, PerformanceEntity>();
-            CreateMap<PerformanceSectionPriceDTO, SectionByPrice>();
+
+            CreateMap<PerformanceSectionDTO, SectionByPrice>();
+            CreateMap<SectionByPrice, PerformanceSectionDTO>();
+            CreateMap<TicketDTO, TicketEntity>();
+            CreateMap<TicketEntity, TicketDTO>();
             CreateMap<SectionByPrice, PerformanceSectionPriceDTO>();
             CreateMap<TheaterCrudDTO, TheaterEntity>();
             CreateMap<TheaterEntity, TheaterCrudDTO>();

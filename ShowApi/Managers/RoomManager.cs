@@ -34,7 +34,7 @@ namespace ShowApi.Managers
 
         }
 
-        internal RoomDTO GetById(string id)
+        public RoomDTO GetById(string id)
         {
             return _mapper.Map<RoomDTO>(_context.GetById(id));
         }
@@ -45,11 +45,12 @@ namespace ShowApi.Managers
         }
 
 
-        internal RoomEntity SaveRoom(string name, IList<string> sections)
+        internal RoomEntity SaveRoom(string name, string theatherID, IList<string> sections)
         {
             var payload = new RoomEntity()
             {
                 Name = name,
+                TheaterId = theatherID,
             };
             if (sections is not null && sections.Count > 0)
             {
