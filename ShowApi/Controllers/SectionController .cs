@@ -39,7 +39,7 @@ namespace ShowApi.Controllers
             return Ok(_manager.GetById(id));
         }
 
-        [HttpPut]
+        [HttpPost]
         public ActionResult Create([BindRequired]string name, [BindRequired]int numberOfSeat, string roomdId)
         {
             if (!checkProfile())

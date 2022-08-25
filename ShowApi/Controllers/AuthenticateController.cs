@@ -34,7 +34,7 @@ namespace ShowApi.Controllers
             return Ok(result.Data);
         }
 
-        [HttpPut("SignUp")]
+        [HttpPost("SignUp")]
         [AllowAnonymous]
         public ActionResult SignUp([BindRequired] string userName, [BindRequired] string password)
         {

@@ -30,7 +30,7 @@ namespace ShowApi.Controllers
             return Ok(_manager.GetById(id));
         }
 
-        [HttpGet("/Filter")]
+        [HttpGet()]
         [AllowAnonymous]
         public ActionResult GetByFilter([FromQuery]decimal? minPrice, [FromQuery] decimal? maxPrice,
                                         [FromQuery] DateTime? minDate, [FromQuery] DateTime? maxDate,
@@ -38,14 +38,9 @@ namespace ShowApi.Controllers
         {
             return Ok(_manager.GetByFilter(minPrice, maxPrice, minDate, maxDate, cast, genre));
         }
-        [HttpGet]
-        [AllowAnonymous]
-        public ActionResult GetAll()
-        {
-            return Ok(_manager.GetAll());
-        }
 
-        [HttpPut]
+
+        [HttpPost]
         public ActionResult Create(PerformanceCrudDTO dto, bool samePriceForAllSections = false, decimal? price = null)
         {
             if (!checkProfile())

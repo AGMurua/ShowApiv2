@@ -38,7 +38,7 @@ namespace ShowApi.Controllers
             return Ok(_manager.GetById(id));
         }
 
-        [HttpPut]
+        [HttpPost]
         public ActionResult Create(CrudShowDTO show)
         {
             if (!checkProfile())

@@ -12,7 +12,7 @@ using System.Collections.Generic;
 namespace ShowApi.Controllers
 {
     [ApiController]
-    //[Authorize]
+    [Authorize]
     [Route("[controller]")]
     public class TheaterController : BaseController
     {
@@ -39,7 +39,7 @@ namespace ShowApi.Controllers
             return Ok(_manager.GetById(id));
         }
 
-        [HttpPut]
+        [HttpPost]
         public ActionResult Create(TheaterCrudDTO dto)
         {
             if (!checkProfile())

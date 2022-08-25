@@ -23,7 +23,7 @@ namespace ShowApi.Controllers
             return Ok(_manager.GetAll(userId(),profile()));
         }
 
-        [HttpPut]
+        [HttpPost]
         public ActionResult Create(ReserveCrudDto ticket)
         {
             var result = _manager.SaveTicket(ticket, userId(), userName());
